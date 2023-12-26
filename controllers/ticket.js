@@ -11,7 +11,7 @@ const createTicket = async (req, res) => {
 
 const getTickets = async (req, res) => {
     try {
-        const { page = 1, pageSize = 10, status, subject } = req.query;
+        const { page = 1, pageSize = 10, status, subject, sortBy, sortOrder } = req.query;
         const query = {};
         if (status) {
             query.status = status;
@@ -21,9 +21,14 @@ const getTickets = async (req, res) => {
         }
         const skip = (page - 1) * pageSize;
         const limit = parseInt(pageSize);
+        const sortOptions = {};
+        if (sortBy) {
+            sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        }
         const tickets = await TicketSchema.find(query)
         .skip(skip)
-        .limit(limit);
+        .limit(limit)
+        .sort(sortOptions);
         res.status(200).json({message: 'Tickets fetched successfully', data: tickets});
     } catch (error) {
         return res.status(500).json({message: error.message});
