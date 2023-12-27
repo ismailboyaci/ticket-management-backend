@@ -44,7 +44,8 @@ const login = async (req, res) => {
         // res.cookie('user', userPayloadString, {httpOnly: true});
         res.status(200).json({
             status: "success",
-            userPayloadString
+            userPayload,
+            userToken
         });
     } catch (error) {
         return res.status(500).json({message: error.message});
