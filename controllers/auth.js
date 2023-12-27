@@ -77,9 +77,9 @@ const verifyToken = async (req, res, next) => {
         }
 
         const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
-        const userToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const newToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         
-        res.status(200).json({ message: "Token verified", userPayload, userToken });
+        res.status(200).json({ message: "Token verified", userPayload, userToken: newToken });
         next();
     } catch (error) {
         return res.status(500).json({ message: error.message });
