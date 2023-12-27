@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({credentials: true, origin: '*'}));
 app.use(cookieParser());
 app.use(express.json({extended: true, limit: '50mb'}));
 app.use(express.urlencoded({extended: true, limit: '50mb'}));

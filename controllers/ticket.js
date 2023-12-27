@@ -25,11 +25,12 @@ const getTickets = async (req, res) => {
         if (sortBy) {
             sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
         }
+        const totalRecords = await TicketSchema.countDocuments(query);
         const tickets = await TicketSchema.find(query)
         .skip(skip)
         .limit(limit)
         .sort(sortOptions);
-        res.status(200).json({message: 'Tickets fetched successfully', data: tickets});
+        res.status(200).json({message: 'Tickets fetched successfully', data: tickets, totalRecords: totalRecords});
     } catch (error) {
         return res.status(500).json({message: error.message});
     }

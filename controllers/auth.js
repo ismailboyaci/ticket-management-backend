@@ -61,4 +61,16 @@ const logout = async (req, res) => {
     }
 }
 
-module.exports = {register, login, logout};
+const verifyToken = (req, res, next) => {
+    const userToken = req.cookies.userToken;
+    if(!userToken) return res.status(401).json({message: "You need to login first"});
+    try {
+        const verified = jwt.verify(userToken, process.env.JWT_SECRET);
+        req.user = verified;
+        next();
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+}
+
+module.exports = {register, login, logout, verifyToken};
