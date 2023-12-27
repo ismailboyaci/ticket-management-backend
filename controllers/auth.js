@@ -41,7 +41,6 @@ const login = async (req, res) => {
         const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
         const userPayloadString = (JSON.stringify(userPayload));
         res.cookie('userToken', userToken);
-        // res.cookie('user', userPayloadString, {httpOnly: true});
         res.status(200).json({
             status: "success",
             userPayload,
@@ -62,25 +61,24 @@ const logout = async (req, res) => {
 }
 
 const verifyToken = async (req, res, next) => {
-    const userToken = req.cookies.userToken;
+    const {userToken} = req.body;
+    console.log(userToken)
 
     if (!userToken) {
         return res.status(401).json({ message: "You need to login first" });
     }
 
     try {
-        // JWT doğrulandıktan sonra içerisindeki bilgiler
         const verified = jwt.verify(userToken, process.env.JWT_SECRET);
-        
-        // Kullanıcı bilgilerini MongoDB'den çekme örneği
         const user = await Auth.findById(verified.id);
         
         if (!user) {
             return res.status(401).json({ message: "User not found" });
         }
 
-        // Kullanıcı bilgilerini req nesnesine ekle
-        req.user = user;
+        const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
+        
+        res.status(200).json({ message: "Token verified", userPayload });
         next();
     } catch (error) {
         return res.status(500).json({ message: error.message });
