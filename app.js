@@ -9,7 +9,9 @@ const cookieParser = require('cookie-parser');
 dotenv.config();
 
 const app = express();
-app.use(cors({credentials: true, origin: '*'}));
+
+const allowedOrigins = ['http://localhost:5173', 'http://example.com'];
+app.use(cors({credentials: true, origin: 'http://localhost:5173'}));
 app.use(cookieParser());
 app.use(express.json({extended: true, limit: '50mb'}));
 app.use(express.urlencoded({extended: true, limit: '50mb'}));
