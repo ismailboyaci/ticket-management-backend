@@ -40,7 +40,7 @@ const login = async (req, res) => {
         const userToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
         const userPayloadString = (JSON.stringify(userPayload));
-        res.cookie('userToken', userToken);
+        res.cookie('userToken', userToken, {httpOnly: secure, sameSite: 'none'});
         // res.cookie('user', userPayloadString, {httpOnly: true});
         res.status(200).json({
             status: "success",
