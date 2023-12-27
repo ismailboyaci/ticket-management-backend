@@ -41,11 +41,10 @@ const login = async (req, res) => {
         const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
         const userPayloadString = (JSON.stringify(userPayload));
         res.cookie('userToken', userToken, {httpOnly: true});
-        res.cookie('user', userPayloadString, {httpOnly: true});
+        // res.cookie('user', userPayloadString, {httpOnly: true});
         res.status(200).json({
             status: "success",
-            user,
-            userToken
+            userPayloadString
         });
     } catch (error) {
         return res.status(500).json({message: error.message});
@@ -61,16 +60,31 @@ const logout = async (req, res) => {
     }
 }
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     const userToken = req.cookies.userToken;
-    if(!userToken) return res.status(401).json({message: "You need to login first"});
+
+    if (!userToken) {
+        return res.status(401).json({ message: "You need to login first" });
+    }
+
     try {
+        // JWT doğrulandıktan sonra içerisindeki bilgiler
         const verified = jwt.verify(userToken, process.env.JWT_SECRET);
-        req.user = verified;
+        
+        // Kullanıcı bilgilerini MongoDB'den çekme örneği
+        const user = await Auth.findById(verified.id);
+        
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        // Kullanıcı bilgilerini req nesnesine ekle
+        req.user = user;
         next();
     } catch (error) {
-        return res.status(500).json({message: error.message});
+        return res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 module.exports = {register, login, logout, verifyToken};
