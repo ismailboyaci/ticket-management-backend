@@ -49,8 +49,9 @@ const getTicketById = async (req, res) => {
 const updateTicket = async (req, res) => {
     try {
         const { id } = req.params;
+        const ticketId = mongoose.Types.ObjectId(id);
         req.body.updatedAt = Date.now();
-        const updateTicket = await TicketSchema.findByIdAndUpdate(id, req.body, {new: true});
+        const updateTicket = await TicketSchema.findByIdAndUpdate(ticketId, req.body, {new: true});
         res.status(200).json({message: 'Ticket updated successfully', data: updateTicket});
     } catch (error) {
         return res.status(500).json({message: error.message});
