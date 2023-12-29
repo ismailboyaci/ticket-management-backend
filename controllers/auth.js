@@ -86,5 +86,37 @@ const verifyToken = async (req, res, next) => {
     }
 };
 
+const getUsers = async (req, res) => {
+    try {
+        const users = await Auth.find();
+        const totalUsers = await Auth.countDocuments();
+        res.status(200).json({users, totalUsers});
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+}
 
-module.exports = {register, login, logout, verifyToken};
+const deleteUser = async (req, res) => {
+    try {
+        const {id} = req.params;
+        await Auth.findByIdAndDelete(id);
+        res.status(200).json({message: "User deleted successfully"});
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+}
+
+const updateUser = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const user = await Auth.findById(id);
+        if(!user) return res.status(500).json({message: "User does not exist"});
+        const updatedUser = await Auth.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(200).json({message: "User updated successfully", updatedUser});
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+}
+
+
+module.exports = {register, login, logout, verifyToken, getUsers, deleteUser, updateUser};
