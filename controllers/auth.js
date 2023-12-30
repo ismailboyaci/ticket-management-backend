@@ -5,17 +5,21 @@ const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
     try {
-        const {username, email, password} = req.body;
+        const { username, email, password, profileImg, isSuperAdmin } = req.body;
         const user = await Auth.findOne({email})
 
         if(user) return res.status(500).json({message: "Email already exists"});
         if(password.length < 6) return res.status(500).json({message: "Password must be at least 6 characters"});
         const passwordHash = await bcrypt.hash(password, 12);
 
+        const defaultProfileImg = "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
+
         const newUser = await Auth.create({
             username,
             email,
-            password: passwordHash
+            password: passwordHash,
+            profileImg: profileImg || defaultProfileImg,
+            isSuperAdmin
         });
         const userToken = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         res.status(201).json({
