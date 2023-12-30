@@ -30,8 +30,8 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        const user = await Auth.findOne({email});
+        const {email, username, password} = req.body;
+        const user = await Auth.findOne({ $or: [{ email }, { username }] });
         if(!user) return res.status(500).json({message: "User does not exist"});
 
         const comparePassword = await bcrypt.compare(password, user.password);
