@@ -23,8 +23,7 @@ const AuthSchema = new mongoose.Schema({
         default: Date.now
     },
     isSuperAdmin: {
-        type: Boolean,
-        default: false
+        type: Boolean
     },
     profileImg: {
         type: String
