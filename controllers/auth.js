@@ -42,7 +42,7 @@ const login = async (req, res) => {
         if(!comparePassword) return res.status(500).json({message: "Incorrect password"});
 
         const userToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
-        const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
+        const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin, profileImg: user.profileImg };
         const userPayloadString = (JSON.stringify(userPayload));
         res.cookie('userToken', userToken);
         res.status(200).json({
@@ -80,7 +80,7 @@ const verifyToken = async (req, res, next) => {
             return res.status(401).json({ message: "User not found" });
         }
 
-        const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin };
+        const userPayload = { username: user.username, email: user.email, isSuperAdmin: user.isSuperAdmin, profileImg: user.profileImg };
         const newToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         
         res.status(200).json({ message: "Token verified", userPayload, userToken: newToken });
