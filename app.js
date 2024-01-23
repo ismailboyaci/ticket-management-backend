@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173', 'https://fimple-bootcamp-final-case.vercel.app'];
+const allowedOrigins = ['http://localhost:5173', 'https://fimple-bootcamp-final-case.vercel.app', 'http://investmentbank.localhost:50000'];
 app.use(cors({
     credentials: true,
     origin: function (origin, callback) {
