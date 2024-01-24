@@ -12,15 +12,8 @@ const app = express();
 
 const allowedOrigins = ['http://localhost:5173', 'https://fimple-bootcamp-final-case.vercel.app', 'http://investmentbank.localhost:50000'];
 app.use(cors({
-    credentials: true,
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-  }));
+  origin: '*'
+}));
 app.use(cookieParser());
 app.use(express.json({extended: true, limit: '50mb'}));
 app.use(express.urlencoded({extended: true, limit: '50mb'}));
