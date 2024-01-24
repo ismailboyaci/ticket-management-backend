@@ -5,15 +5,24 @@ const db = require('./config/db');
 const Auth = require('./routes/auth');
 const Ticket = require('./routes/ticket');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 
 dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173', 'https://fimple-bootcamp-final-case.vercel.app', 'http://investmentbank.localhost:50000'];
+const allowedOrigins = ['http://localhost:5173', 'https://fimple-bootcamp-final-case.vercel.app', 'http://investmentbank.localhost:50000', 'http://investmentbank.localhost'];
 app.use(cors({
-  origin: '*'
-}));
+    credentials: true,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  }));
+app.use(helmet());
 app.use(cookieParser());
 app.use(express.json({extended: true, limit: '50mb'}));
 app.use(express.urlencoded({extended: true, limit: '50mb'}));
